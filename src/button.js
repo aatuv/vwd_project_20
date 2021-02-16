@@ -1,4 +1,4 @@
-import { isIntersecting, hslColor, degreesToRadians } from "./util.js";
+import { gameButtonIsIntersecting, isIntersecting, hslColor, degreesToRadians } from "./util.js";
 
 class Button {
   constructor(
@@ -80,20 +80,51 @@ class GameButton extends Button {
     rotateDegrees
   ) {
     super(canvas, context, location, width, height, text, color, rotateDegrees);
+    this.radius = this.width * 0.5;
+  }
+
+  onClick(callback) {
+    this.canvas.addEventListener("click", (event) => {
+      // mouseposition relative to the window
+      const mousePosition = {
+        x: event.clientX - this.canvas.offsetLeft,
+        y: event.clientY - this.canvas.offsetTop,
+      };
+      if (gameButtonIsIntersecting(mousePosition, this, this.rotateDegrees)) {
+        callback();
+      }
+    });
+  }
+
+  onHover(callback) {
+    this.canvas.addEventListener("mousemove", (event) => {
+      // mouseposition relative to the window
+      const mousePosition = {
+        x: event.clientX - this.canvas.offsetLeft,
+        y: event.clientY - this.canvas.offsetTop,
+      };
+      if (gameButtonIsIntersecting(mousePosition, this, this.rotateDegrees)) {
+        this.color = hslColor(this.colorTint[0], this.colorTint[1], 30);
+        this.isHovered = true;
+        callback();
+      } else {
+        this.isHovered = false;
+        this.color = hslColor(this.colorTint[0], this.colorTint[1], 50);
+      }
+    });
   }
 
   draw() {
-    const radius = this.width * 0.5;
     this.context.beginPath();
     this.context.save();
     this.context.translate(this.location[0], this.location[1]);
     this.context.rotate(degreesToRadians(this.rotateDegrees));
     this.context.fillStyle = this.color;
     this.context.strokeStyle = this.color;
-    this.context.arc(0, 0, radius, 0, 0.5 * Math.PI);
-    this.context.lineTo(0, radius * 2);
-    this.context.arc(0, 0, radius * 2, degreesToRadians(90), 0 * Math.PI, true);
-    this.context.lineTo(radius, 0);
+    this.context.arc(0, 0, this.radius, 0, 0.5 * Math.PI);
+    this.context.lineTo(0, this.radius * 2);
+    this.context.arc(0, 0, this.radius * 2, degreesToRadians(90), 0 * Math.PI, true);
+    this.context.lineTo(this.radius, 0);
     this.context.fill();
     //this.context.stroke();
     this.context.closePath();
