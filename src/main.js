@@ -2,10 +2,13 @@ import { clearCanvas } from "./util.js";
 import GameButton from "./button.js";
 
 let canvas = document.getElementById("mainCanvas");
+let hitcanvas=document.getElementById("hitCanvas");
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
 var ctx = canvas.getContext("2d");
+var hitCtx = hitcanvas.getContext("2d");
 let buttons = [];
+let hitbuttons=[];
 
 // initialize canvas
 const init = () => {
