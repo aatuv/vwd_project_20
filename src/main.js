@@ -4,13 +4,16 @@ import { drawAnalyser, NOTES, playNote } from "./audio.js";
 
 let canvas = document.getElementById("mainCanvas");
 let soundDebugCanvas = document.getElementById("soundDebug");
+let hitcanvas=document.getElementById("hitCanvas");
 soundDebugCanvas.height = 500;
 soundDebugCanvas.width = 700;
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
 var ctx = canvas.getContext("2d");
+var hitCtx = hitcanvas.getContext("2d");
 var sdCtx = soundDebugCanvas.getContext("2d");
 let buttons = [];
+let hitbuttons=[];
 
 // initialize canvas
 const init = () => {
