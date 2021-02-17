@@ -103,6 +103,7 @@ const gameButtonIsIntersecting = (xyPos, canvasElement, rotateDegrees) => {
   }
 };
 
+// return a hsl color with specified parameters
 const hslColor = (hue, saturation, lightness) => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };

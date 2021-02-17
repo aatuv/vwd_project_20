@@ -20,7 +20,7 @@ class Button {
     this.isDisabled = false;
     this.isHovered = false;
     this.rotateDegrees = rotateDegrees;
-    this.colorTint = color;
+    this.colorTint = color; // saving the original color settings to make adjusting the color brightness easier
     this.color = hslColor(color[0], color[1], 50); // [hue, sat]
   }
 
