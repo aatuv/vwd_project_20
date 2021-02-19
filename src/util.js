@@ -3,49 +3,16 @@ const clearCanvas = (ctx, canvas) => {
 };
 
 // for square buttons
-const isIntersecting = (xyPos, canvasElement, rotateDegrees) => {
-  switch (rotateDegrees) {
-    case 90:
-      if (
-        xyPos.x > 0 ||
-        xyPos.x < -canvasElement.width ||
-        xyPos.y < 0 ||
-        xyPos.y > canvasElement.height
-      ) {
-        return false;
-      }
-      return true;
-    case 180:
-      if (
-        xyPos.x > 0 ||
-        xyPos.x < -canvasElement.width ||
-        xyPos.y < -canvasElement.height ||
-        xyPos.y > 0
-      ) {
-        return false;
-      }
-      return true;
-    case 270:
-      if (
-        xyPos.x > canvasElement.width ||
-        xyPos.x < 0 ||
-        xyPos.y < -canvasElement.height ||
-        xyPos.y > 0
-      ) {
-        return false;
-      }
-      return true;
-    default:
-      if (
-        xyPos.x > canvasElement.width ||
-        xyPos.x < 0 ||
-        xyPos.y < 0 ||
-        xyPos.y > canvasElement.height
-      ) {
-        return false;
-      }
-      return true;
+const isIntersecting = (xyPos, canvasElement) => {
+  if (
+    xyPos.x < canvasElement.left ||
+    xyPos.x > canvasElement.right ||
+    xyPos.y < canvasElement.top ||
+    xyPos.y > canvasElement.bottom
+  ) {
+    return false;
   }
+  return true;
 };
 
 // for game buttons
