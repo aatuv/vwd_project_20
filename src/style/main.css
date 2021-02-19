@@ -27,3 +27,9 @@ body {
     top: 0;
     background: white;
 }
+
+#startButton{
+    position: absolute;
+    left: 50%;
+    bottom: 0px;
+}
