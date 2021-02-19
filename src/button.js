@@ -142,5 +142,85 @@ class GameButton extends Button {
 
   update() {}
 }
+class startButton extends Button{
+  constructor(
+    canvas,
+    context,
+    location,
+    width,
+    height,
+    text,
+    color,
+    rotateDegrees
+  ) {
+    this.context = context;
+    this.canvas = canvas;
+    this.location = location;
+    this.width = width;
+    this.height = height;
+    this.text = text;
+    this.isDisabled = false;
+    this.isHovered = false;
+    this.rotateDegrees = rotateDegrees;
+    this.colorTint = color; // saving the original color settings to make adjusting the color brightness easier
+    this.color = hslColor(color[0], color[1], 50); // [hue, sat]
+  }
+  onClick(callback) {
+    this.canvas.addEventListener("click", (event) => {
+      // mouseposition relative to the window
+      const mousePosition = {
+        x: event.clientX - this.canvas.offsetLeft,
+        y: event.clientY - this.canvas.offsetTop,
+      };
+      if (isIntersecting(mousePosition, this, this.rotateDegrees)) {
+        callback();
+      }
+    });
+  }
+  onHover(callback) {
+    this.canvas.addEventListener("mousemove", (event) => {
+      // mouseposition relative to the window
+      const mousePosition = {
+        x: event.clientX - this.canvas.offsetLeft,
+        y: event.clientY - this.canvas.offsetTop,
+      };
+      if (isIntersecting(mousePosition, this, this.rotateDegrees)) {
+        this.color = hslColor(this.colorTint[0], this.colorTint[1], 30);
+        this.isHovered = true;
+        callback();
+      } else {
+        this.isHovered = false;
+        this.color = hslColor(this.colorTint[0], this.colorTint[1], 50);
+      }
+    });
+  }
+  draw() {
+    this.context.beginPath();
+    this.context.save();
+    this.context.translate(this.location[0], this.location[1]);
+    this.context.fillStyle = this.color;
+    this.context.strokeStyle = this.color;
+    this.context.lineTo(this.location[0]+100, this.location[1]);
+    this.context.lineTo(this.location[0]+100, this.location[1]+100);
+    this.context.lineTo(this.location[0], this.location[1]+100);
+    this.context.lineTo(this.location[0], this.location[1]);
+    this.context.fill();
+    //this.context.stroke();
+    this.context.closePath();
+    if (this.text) {
+      this.context.fillStyle = hslColor(1, 1, 0);
+      this.context.font = "20px Georgia";
+      this.context.fillText(
+        this.text,
+        this.location[0] + this.width * 0.25,
+        this.location[1] + this.height * 0.25
+      );
+    }
+    this.context.restore();
+  }
 
-export default GameButton;
+  update() {}
+}
+//export{startButton};
+export default GameButton; 
+ 
