@@ -37,7 +37,7 @@ const init = () => {
       );
       let randomNote = Object.keys(NOTES)[randomNoteIndex];
       console.log(randomNote)
-      playNote(NOTES[randomNote], 3);
+      playNote(NOTES[randomNote], 2);
     });
     buttons[i].onHover(() => {
     });
