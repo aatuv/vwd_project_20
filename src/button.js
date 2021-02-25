@@ -83,7 +83,7 @@ class Button {
     );
     this.context.font = "20px Georgia";
     this.context.fillStyle = "rgb(0,0,0)";
-    this.context.fillText(this.text, this.location[0], this.location[1] + this.height * 0.5 , this.width);
+    this.context.fillText(this.text, this.location[0]+this.width* 0.25, this.location[1] + this.height * 0.5 , this.width);
   }
 }
 

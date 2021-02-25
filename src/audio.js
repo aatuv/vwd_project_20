@@ -3,7 +3,7 @@ var audioContext;
 var masterGain;
 var analyser;
 
-const playNote = (frequency, duration) => {
+const playNote = (frequency, duration, offset) => {
   audioContext = new AudioContext();
   analyser = new AnalyserNode(audioContext, {
     fftSize: Math.pow(2, 13),
@@ -28,8 +28,8 @@ const playNote = (frequency, duration) => {
     0.05,
     audioContext.currentTime + duration
   );
-  oscillatorNode.start(audioContext.currentTime);
-  oscillatorNode.stop(audioContext.currentTime + duration);
+  oscillatorNode.start(audioContext.currentTime+offset);
+  oscillatorNode.stop(audioContext.currentTime + duration+offset);
   oscillatorNode.connect(gainNode);
   gainNode.connect(masterGain);
 };

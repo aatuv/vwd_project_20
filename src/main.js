@@ -13,7 +13,8 @@ var ctx = canvas.getContext("2d");
 var sdCtx = soundDebugCanvas.getContext("2d");
 let buttons = [];
 let startButton;
-var gameLength = 1;
+let gameLength = 1;
+let order=[];
 
 // initialize canvas
 const init = () => {
@@ -38,7 +39,7 @@ const init = () => {
       );
       let randomNote = Object.keys(NOTES)[randomNoteIndex];
       console.log(randomNote);
-      playNote(NOTES[randomNote], 2);
+      playNote(NOTES[randomNote], 2, 0);
     });
     buttons[i].onHover(() => {});
     rotate += 90;
@@ -47,8 +48,8 @@ const init = () => {
   startButton = new Button(
     canvas,
     ctx,
-    [canvas.width * 0.4, canvas.height * 0.8],
-    200,
+    [canvas.width * 0.4, canvas.height * 0.85],
+    400,
     100,
     "Play the game!",
     [70, 50],
@@ -57,19 +58,23 @@ const init = () => {
   startButton.onClick(() => {
     console.log("start game")
     // start game function()
+    playOrder();
   })
   startButton.onHover(() => {
     //console.log("hover start")
   })
 };
 const playOrder = () => {
-  for (i = 0; i < gameLength.length; i++) {
-    let randomNoteIndex = Math.floor(Math.random() * Object.keys(NOTES).length);
-    var order = [];
+  for(let i=0;i<gameLength; i++){
+    let randomNoteIndex = Math.floor(
+      Math.random() * Object.keys(NOTES).length
+    );
     let randomNote = Object.keys(NOTES)[randomNoteIndex];
     console.log(randomNote);
-    order[i] = randomNote;
-    playNote(order[i], 3);
+    order.push(randomNote);
+  }
+  for (let i=0; i<order.length; i++){
+    playNote(NOTES[order[i]], 1, i+1);
   }
 };
 const nextRound = () => {
