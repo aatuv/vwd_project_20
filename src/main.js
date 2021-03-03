@@ -1,6 +1,10 @@
 import { clearCanvas } from "./util.js";
 import { Button, GameButton } from "./button.js";
-import { drawAnalyser, NOTES, playNote } from "./audio.js";
+import {
+  drawAnalyser,
+  NOTES,
+  playNote,
+} from "./audio.js";
 
 let canvas = document.getElementById("mainCanvas");
 let soundDebugCanvas = document.getElementById("soundDebug");
@@ -13,12 +17,50 @@ var ctx = canvas.getContext("2d");
 var sdCtx = soundDebugCanvas.getContext("2d");
 let buttons = [];
 let startButton;
-var gameLength = 1;
+let roundLength = 5; // how long sequence is on this round
+let points = 0; // player
+let round = [];
+const GAME_NOTES = [NOTES.C, NOTES.D, NOTES.G, NOTES.E];
+
+const generateNewRound = () => {
+  let newRound = [];
+  for (let i = 0; i < roundLength; i++) {
+    let randomGameNoteIndex = Math.floor(Math.random() * GAME_NOTES.length);
+    newRound.push(
+      playNote(GAME_NOTES[randomGameNoteIndex], 1)
+    );
+  }
+  return newRound;
+};
+const nextRound = () => {
+  //need some trigger to start the next round
+  gameLength++;
+  playOrder();
+};
+
+const playRound = () => {
+  round.reduce(
+    (previous, current) => previous.then(current),
+    Promise.resolve()
+  );
+};
+
+const startGame = () => {
+/*   for (let i = 0; i < buttons.length; i++) {
+    buttons[i].isPlayingSound = false;
+  }
+  round = generateNewRound();
+  playRound(); */
+  const asd = playNote(GAME_NOTES[0], 2);
+};
+
+const gameIntro = () => {};
 
 // initialize canvas
 const init = () => {
   // initialize game buttons
   let rotate = 0;
+  let hue = 0;
   for (let i = 0; i < 4; i++) {
     buttons.push(
       new GameButton(
@@ -28,20 +70,19 @@ const init = () => {
         300,
         300,
         null,
-        [Math.random() * 100, Math.random() * 100],
+        [hue, 100],
         rotate
       )
     );
     buttons[i].onClick(() => {
-      let randomNoteIndex = Math.floor(
-        Math.random() * Object.keys(NOTES).length
-      );
-      let randomNote = Object.keys(NOTES)[randomNoteIndex];
-      console.log(randomNote);
-      playNote(NOTES[randomNote], 2);
+      playNote(GAME_NOTES[i], 1);
     });
-    buttons[i].onHover(() => {});
+    buttons[i].onHover(() => {
+      console.log("asdsd");
+    });
+    buttons[i].isDisabled = true;
     rotate += 90;
+    hue += 25;
   }
   // initialize start button
   startButton = new Button(
@@ -54,28 +95,10 @@ const init = () => {
     [70, 50],
     0
   );
-  startButton.onClick(() => {
-    console.log("start game")
-    // start game function()
-  })
+  startButton.onClick(startGame);
   startButton.onHover(() => {
     //console.log("hover start")
-  })
-};
-const playOrder = () => {
-  for (i = 0; i < gameLength.length; i++) {
-    let randomNoteIndex = Math.floor(Math.random() * Object.keys(NOTES).length);
-    var order = [];
-    let randomNote = Object.keys(NOTES)[randomNoteIndex];
-    console.log(randomNote);
-    order[i] = randomNote;
-    playNote(order[i], 3);
-  }
-};
-const nextRound = () => {
-  //need some trigger to start the next round
-  gameLength++;
-  playOrder();
+  });
 };
 
 const animationLoop = () => {
@@ -84,7 +107,6 @@ const animationLoop = () => {
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].draw();
   }
-
   startButton.draw();
   drawAnalyser(soundDebugCanvas, sdCtx);
   window.requestAnimationFrame(animationLoop);

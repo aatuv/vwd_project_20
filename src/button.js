@@ -51,7 +51,7 @@ class Button {
         y: event.clientY,
       };
       if (isIntersecting(mousePosition, this)) {
-        callback();
+        !this.isDisabled && callback();
       }
     });
   }
@@ -64,11 +64,15 @@ class Button {
       };
       if (isIntersecting(mousePosition, this)) {
         this.isHovered = true;
-        this.color = hslColor(this.colorTint[0], this.colorTint[1], 30);
-        callback();
+        if (!this.isDisabled) {
+          this.color = hslColor(this.colorTint[0], this.colorTint[1], 30);
+          callback();
+        }
       } else {
         this.isHovered = false;
-        this.color = hslColor(this.colorTint[0], this.colorTint[1], 50);
+        if (!this.isDisabled) {
+          this.color = hslColor(this.colorTint[0], this.colorTint[1], 50);
+        }
       }
     });
   }
@@ -83,7 +87,12 @@ class Button {
     );
     this.context.font = "20px Georgia";
     this.context.fillStyle = "rgb(0,0,0)";
-    this.context.fillText(this.text, this.location[0], this.location[1] + this.height * 0.5 , this.width);
+    this.context.fillText(
+      this.text,
+      this.location[0] + this.width * 0.25,
+      this.location[1] + this.height * 0.5,
+      this.width
+    );
   }
 }
 
@@ -101,6 +110,7 @@ class GameButton extends Button {
   ) {
     super(canvas, context, location, width, height, text, color, rotateDegrees);
     this.radius = this.width * 0.5;
+    this.isPlayingSound = false;
   }
 
   onClick(callback) {
@@ -111,7 +121,7 @@ class GameButton extends Button {
         y: event.clientY - this.canvas.offsetTop,
       };
       if (gameButtonIsIntersecting(mousePosition, this, this.rotateDegrees)) {
-        callback();
+        !this.isDisabled && callback();
       }
     });
   }
@@ -124,17 +134,22 @@ class GameButton extends Button {
         y: event.clientY - this.canvas.offsetTop,
       };
       if (gameButtonIsIntersecting(mousePosition, this, this.rotateDegrees)) {
-        this.color = hslColor(this.colorTint[0], this.colorTint[1], 30);
         this.isHovered = true;
-        callback();
+        if (!this.isDisabled) {
+          this.color = hslColor(this.colorTint[0], this.colorTint[1], 30);
+          callback();
+        }
       } else {
         this.isHovered = false;
-        this.color = hslColor(this.colorTint[0], this.colorTint[1], 50);
+        if (!this.isDisabled) {
+          this.color = hslColor(this.colorTint[0], this.colorTint[1], 50);
+        }
       }
     });
   }
 
   draw() {
+    if (this.isDisabled && !this.isPlayingSound) this.color = hslColor(this.colorTint[0], this.colorTint[1], 20);
     this.context.beginPath();
     this.context.save();
     this.context.translate(this.location[0], this.location[1]);

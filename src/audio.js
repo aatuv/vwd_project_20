@@ -13,10 +13,23 @@ const playNote = (frequency, duration) => {
   masterGain.gain.setValueAtTime(0.3, audioContext.currentTime);
   masterGain.connect(analyser);
 
-  var oscillatorNode = new OscillatorNode(audioContext, {
+  var merger = audioContext.createChannelMerger(3);
+  merger.connect(audioContext.destination);
+
+  var oscillatorNode1 = new OscillatorNode(audioContext, {
     frequency: frequency,
-    detune: 0.5,
-    type: "sawtooth",
+    detune: 100,
+    type: "triangle",
+  });
+  var oscillatorNode2 = new OscillatorNode(audioContext, {
+    frequency: frequency * 0.25,
+    detune: 100,
+    type: "sine",
+  });
+  var oscillatorNode3 = new OscillatorNode(audioContext, {
+    frequency: frequency * 2,
+    detune: 100,
+    type: "square",
   });
   var gainNode = audioContext.createGain();
   gainNode.gain.setValueAtTime(0.001, audioContext.currentTime);
@@ -28,9 +41,15 @@ const playNote = (frequency, duration) => {
     0.05,
     audioContext.currentTime + duration
   );
-  oscillatorNode.start(audioContext.currentTime);
-  oscillatorNode.stop(audioContext.currentTime + duration);
-  oscillatorNode.connect(gainNode);
+  oscillatorNode1.start(audioContext.currentTime);
+  oscillatorNode2.start(audioContext.currentTime);
+  oscillatorNode3.start(audioContext.currentTime);
+  oscillatorNode1.stop(audioContext.currentTime + duration);
+  oscillatorNode2.stop(audioContext.currentTime + duration);
+  oscillatorNode3.stop(audioContext.currentTime + duration);
+  oscillatorNode1.connect(gainNode);
+  oscillatorNode2.connect(gainNode);
+  oscillatorNode3.connect(gainNode);
   gainNode.connect(masterGain);
 };
 
