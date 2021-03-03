@@ -3,7 +3,7 @@ var audioContext;
 var masterGain;
 var analyser;
 
-const playNote = (frequency, duration) => {
+const playNote = (frequency, duration, offset) => {
   audioContext = new AudioContext();
   analyser = new AnalyserNode(audioContext, {
     fftSize: Math.pow(2, 13),

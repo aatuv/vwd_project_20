@@ -88,8 +88,8 @@ const init = () => {
   startButton = new Button(
     canvas,
     ctx,
-    [canvas.width * 0.4, canvas.height * 0.8],
-    200,
+    [canvas.width * 0.4, canvas.height * 0.85],
+    400,
     100,
     "Play the game!",
     [70, 50],
