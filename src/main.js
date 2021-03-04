@@ -1,4 +1,4 @@
-import { clearCanvas, drawInfoText } from "./util.js";
+import { clearCanvas, drawText } from "./util.js";
 import { Button, GameButton } from "./button.js";
 import { drawAnalyser, NOTES, playNote } from "./audio.js";
 
@@ -15,11 +15,13 @@ let infoText = "Start the game!";
 let buttons = [];
 let startButton;
 let roundLength = 2; // how long sequence is on this round
-let points = 0; // player
-let round = [];
-let playedNotes = [];
-const GAME_NOTES = [NOTES.C, NOTES.D, NOTES.G, NOTES.E];
+let points = 0;
+let gameIsRunning = false;
+let round = []; // correct notes for this round
+let playedNotes = []; // the notes that the player has played this round
+const GAME_NOTES = [NOTES.C, NOTES.D, NOTES.G, NOTES.E]; // notes mapped to gameButtons
 
+// generate a new round randomly and return it
 const generateNewRound = () => {
   let newRound = [];
   for (let i = 0; i < roundLength; i++) {
@@ -28,18 +30,22 @@ const generateNewRound = () => {
   }
   return newRound;
 };
+
 const nextRound = () => {
-  //need some trigger to start the next round
-  roundLength++;
-  round = generateNewRound();
-  setTimeout(playRound, 1000);
+  if (gameIsRunning) {
+    playedNotes = [];
+    round = [];
+    roundLength++;
+    round = generateNewRound();
+    setTimeout(playRound(), 1000);
+  }
 };
 
+// end current round and start a move to the next one
 const endRound = () => {
-  playedNotes = [];
-  round = [];
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].isDisabled = true;
+    buttons[i].dim();
     buttons[i].onClick(() => {});
   }
   infoText = "get ready for next round!";
@@ -49,11 +55,27 @@ const endRound = () => {
   }, 3000);
 };
 
+const disableGameButtons = () => {
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].isDisabled = true;
+    buttons[i].isPlayingSound = false;
+    buttons[i].dim();
+  }
+};
+
+// the game has ended, set initialize game variables
+// TODO: show final score
 const gameEnded = () => {
   infoText = "you failed! The game has ended.";
+  round = [];
+  playedNotes = [];
+  points = 0;
+  gameIsRunning = false;
+  disableGameButtons();
   roundLength = 2;
 };
 
+// add the gameButton's note to the playedNotes array, validate if the player remembered the right sequence or not and execute actions accordingly.
 const addToPlayedNotesArray = (note) => {
   console.log(playedNotes);
   playedNotes.push(note);
@@ -64,22 +86,29 @@ const addToPlayedNotesArray = (note) => {
     gameEnded();
   } else {
     infoText = "Correct!";
+    points += 100;
+    setTimeout(() => {
+      infoText = "";
+    }, 500);
   }
 };
 
+// play the current round. first show the generated sequence, then "give the ball" to the player
 const playRound = () => {
   let counter = 0;
+
   // first show the order of buttons to press
   const awaitRound = () => {
     infoText = "playing round...";
+    let playRoundNotes;
     return new Promise((resolve, reject) => {
-      setInterval(() => {
+      playRoundNotes = setInterval(() => {
         if (counter < round.length) {
           buttons.find((button) => button.note === round[counter]).lightUp(900);
           playNote(round[counter], 1);
           counter++;
         } else {
-          clearInterval();
+          clearInterval(playRoundNotes);
           resolve();
         }
       }, 1000);
@@ -90,10 +119,6 @@ const playRound = () => {
   const activateButtons = () => {
     for (let i = 0; i < buttons.length; i++) {
       buttons[i].isDisabled = false;
-      buttons[i].onClick(() => {
-        playNote(buttons[i].note, 1);
-        addToPlayedNotesArray(buttons[i].note);
-      });
     }
     infoText = "Your turn!";
   };
@@ -104,14 +129,13 @@ const playRound = () => {
 };
 
 const startGame = () => {
+  gameIsRunning = true;
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].isPlayingSound = true;
   }
   round = generateNewRound();
   playRound();
 };
-
-const gameIntro = () => {};
 
 // initialize canvas
 const init = () => {
@@ -132,6 +156,10 @@ const init = () => {
         GAME_NOTES[i]
       )
     );
+    buttons[i].onClick(() => {
+      playNote(buttons[i].note, 1);
+      addToPlayedNotesArray(buttons[i].note);
+    });
     buttons[i].onHover(() => {});
     buttons[i].isDisabled = true;
     rotate += 90;
@@ -162,7 +190,8 @@ const animationLoop = () => {
   }
   startButton.draw();
   drawAnalyser(soundDebugCanvas, sdCtx);
-  drawInfoText(ctx, infoText, [canvas.width * 0.5, canvas.height * 0.1]);
+  drawText(ctx, infoText, [canvas.width * 0.5, canvas.height * 0.1]);
+  drawText(ctx, `Points: ${points}`, [canvas.width * 0.4, canvas.height * 0.1]);
   window.requestAnimationFrame(animationLoop);
 };
 

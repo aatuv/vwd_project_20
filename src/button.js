@@ -157,6 +157,10 @@ class GameButton extends Button {
     }, time)
   }
 
+  dim() {
+    this.color = hslColor(this.colorTint[0], this.colorTint[1], 20);
+  }
+
   draw() {
     if (this.isDisabled && !this.isPlayingSound) this.color = hslColor(this.colorTint[0], this.colorTint[1], 20);
     this.context.beginPath();
