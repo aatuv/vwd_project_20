@@ -79,10 +79,17 @@ const degreesToRadians = (degrees) => {
   return degrees * (Math.PI / 180);
 };
 
+const drawInfoText = (ctx, text, position) => {
+  ctx.fillStyle = "white";
+  ctx.font = "24px Consolas";
+  ctx.fillText(text, position[0], position[1]);
+}
+
 export {
   clearCanvas,
   isIntersecting,
   gameButtonIsIntersecting,
   hslColor,
   degreesToRadians,
+  drawInfoText
 };

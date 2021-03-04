@@ -106,10 +106,12 @@ class GameButton extends Button {
     height,
     text,
     color,
-    rotateDegrees
+    rotateDegrees,
+    note
   ) {
     super(canvas, context, location, width, height, text, color, rotateDegrees);
     this.radius = this.width * 0.5;
+    this.note = note;
     this.isPlayingSound = false;
   }
 
@@ -146,6 +148,13 @@ class GameButton extends Button {
         }
       }
     });
+  }
+
+  lightUp(time) {
+    this.color = hslColor(this.colorTint[0], this.colorTint[1], 50);
+    setTimeout(() => {
+      this.color = hslColor(this.colorTint[0], this.colorTint[1], 20);
+    }, time)
   }
 
   draw() {
