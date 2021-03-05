@@ -49,6 +49,8 @@ const endRound = () => {
     buttons[i].onClick(() => {});
   }
   infoText = "get ready for next round!";
+  var audio = new Audio("src/sounds/magic1.mp3");
+  audio.play();
   setTimeout(() => {
     infoText = "Round starting...";
     nextRound();
@@ -73,6 +75,8 @@ const gameEnded = () => {
   gameIsRunning = false;
   disableGameButtons();
   roundLength = 2;
+  var audio = new Audio("src/sounds/fail1.mp3");
+  audio.play();
 };
 
 // add the gameButton's note to the playedNotes array, validate if the player remembered the right sequence or not and execute actions accordingly.
