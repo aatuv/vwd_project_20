@@ -1,4 +1,4 @@
-import { clearCanvas, drawText } from "./util.js";
+import { clearCanvas, drawText, displayInfo } from "./util.js";
 import { Button, GameButton } from "./button.js";
 import { drawAnalyser, NOTES, playNote } from "./audio.js";
 
@@ -14,12 +14,14 @@ var ctx = canvas.getContext("2d");
 let infoText = "Start the game!";
 let buttons = [];
 let startButton;
-let roundLength = 2; // how long sequence is on this round
+let infoButton;
+let roundLength = 3; // how long sequence is on this round
 let points = 0;
 let gameIsRunning = false;
 let round = []; // correct notes for this round
 let playedNotes = []; // the notes that the player has played this round
 const GAME_NOTES = [NOTES.C, NOTES.D, NOTES.G, NOTES.E]; // notes mapped to gameButtons
+
 
 // generate a new round randomly and return it
 const generateNewRound = () => {
@@ -68,20 +70,19 @@ const disableGameButtons = () => {
 // the game has ended, set initialize game variables
 // TODO: show final score
 const gameEnded = () => {
-  infoText = "you failed! The game has ended.";
+  infoText = `The game has ended! Your score was ${points} points.`;
   round = [];
   playedNotes = [];
   points = 0;
   gameIsRunning = false;
   disableGameButtons();
-  roundLength = 2;
+  roundLength = 3;
   var audio = new Audio("https://dl.dropbox.com/s/o8kfeq9cz0pvi9v/fail1.mp3");
   audio.play();
 };
 
 // add the gameButton's note to the playedNotes array, validate if the player remembered the right sequence or not and execute actions accordingly.
 const addToPlayedNotesArray = (note) => {
-  console.log(playedNotes);
   playedNotes.push(note);
   if (playedNotes.length === round.length) {
     endRound();
@@ -90,7 +91,7 @@ const addToPlayedNotesArray = (note) => {
     gameEnded();
   } else {
     infoText = "Correct!";
-    points += 100;
+    points += 10;
     setTimeout(() => {
       infoText = "";
     }, 500);
@@ -173,15 +174,30 @@ const init = () => {
   startButton = new Button(
     canvas,
     ctx,
-    [canvas.width * 0.4, canvas.height * 0.85],
-    400,
-    100,
+    [canvas.width * 0.6, 0],
+    250,
+    70,
     "Play the game!",
-    [70, 50],
+    [70, 90],
     0
   );
   startButton.onClick(startGame);
   startButton.onHover(() => {
+    //console.log("hover start")
+  });
+
+  infoButton = new Button(
+    canvas,
+    ctx,
+    [canvas.width * 0.3, 0],
+    250,
+    70,
+    "About the game",
+    [30, 80],
+    0
+  );
+  infoButton.onClick(displayInfo);
+  infoButton.onHover(() => {
     //console.log("hover start")
   });
 };
@@ -193,9 +209,11 @@ const animationLoop = () => {
     buttons[i].draw();
   }
   startButton.draw();
+  infoButton.draw();
 /*   drawAnalyser(soundDebugCanvas, sdCtx); */
-  drawText(ctx, infoText, [canvas.width * 0.5, canvas.height * 0.1]);
-  drawText(ctx, `Points: ${points}`, [canvas.width * 0.4, canvas.height * 0.1]);
+  drawText(ctx, infoText, [canvas.width * 0.45, canvas.height * 0.12]);
+  drawText(ctx, `Points: ${points}`, [canvas.width * 0.45, canvas.height * 0.165]);
+  drawText(ctx, "Team 20", [canvas.width * 0.5 - 75, canvas.height * 0.50], 40, 150)
   window.requestAnimationFrame(animationLoop);
 };
 
@@ -203,6 +221,6 @@ init();
 animationLoop();
 
 window.addEventListener("resize", () => {
-  canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
 });

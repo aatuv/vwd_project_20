@@ -79,11 +79,25 @@ const degreesToRadians = (degrees) => {
   return degrees * (Math.PI / 180);
 };
 
-const drawText = (ctx, text, position) => {
+const drawText = (ctx, text, position, fontSize, maxWidth) => {
   ctx.fillStyle = "white";
-  ctx.font = "24px Consolas";
-  ctx.fillText(text, position[0], position[1]);
-}
+  ctx.font = fontSize ? `${fontSize}px Consolas` : "24px Consolas";
+  ctx.fillText(text, position[0], position[1], maxWidth);
+};
+
+const displayInfo = () => {
+  let info = document.getElementById("info");
+  let infoStyle = window.getComputedStyle(info);
+  let displayState = infoStyle.getPropertyValue("top");
+  switch (displayState) {
+    case "500px":
+      info.style.top = "-500px";
+      break;
+    default:
+      info.style.top = "500px";
+      break;
+  }
+};
 
 export {
   clearCanvas,
@@ -91,5 +105,6 @@ export {
   gameButtonIsIntersecting,
   hslColor,
   degreesToRadians,
-  drawText
+  drawText,
+  displayInfo,
 };

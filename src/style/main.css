@@ -11,7 +11,6 @@ html, body {
 
 body {
     overflow: hidden;
-    background: radial-gradient(circle, rgba(0, 0, 0, 1) 30%, rgba(20, 20, 20, 0.9) 100%);
 }
 
 #mainCanvas {
@@ -19,6 +18,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    background: rgba(22, 14, 12, 0.726);
 }
 
 #soundDebug {
@@ -28,7 +28,28 @@ body {
     background: white;
 }
 
-#startButton{
+#info {
+    position: absolute;
+    top: -500px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgb(11, 114, 231);
+    max-width: 400px;
+    min-height: 400px;
+    font-size: 1.2rem;
+    padding: 2rem 1rem;
+    transition: top 0.5s ease-in;
+}
+
+#info>* {
+    margin-bottom: 1rem;
+}
+
+.mb {
+    margin-bottom: 1rem;
+}
+
+#startButton {
     position: absolute;
     left: 50%;
     bottom: 0px;
