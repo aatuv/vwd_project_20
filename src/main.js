@@ -3,14 +3,14 @@ import { Button, GameButton } from "./button.js";
 import { drawAnalyser, NOTES, playNote } from "./audio.js";
 
 let canvas = document.getElementById("mainCanvas");
-let soundDebugCanvas = document.getElementById("soundDebug");
+/* let soundDebugCanvas = document.getElementById("soundDebug"); */
 //let startButton = document.getElementById("startButton");
-soundDebugCanvas.height = 500;
-soundDebugCanvas.width = 700;
+/* soundDebugCanvas.height = 500;
+soundDebugCanvas.width = 700; */
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
 var ctx = canvas.getContext("2d");
-var sdCtx = soundDebugCanvas.getContext("2d");
+/* var sdCtx = soundDebugCanvas.getContext("2d"); */
 let infoText = "Start the game!";
 let buttons = [];
 let startButton;
@@ -49,7 +49,7 @@ const endRound = () => {
     buttons[i].onClick(() => {});
   }
   infoText = "get ready for next round!";
-  var audio = new Audio("src/sounds/magic1.mp3");
+  var audio = new Audio("https://dl.dropbox.com/s/zp3hwkf1vrimq6e/magic1.mp3");
   audio.play();
   setTimeout(() => {
     infoText = "Round starting...";
@@ -75,7 +75,7 @@ const gameEnded = () => {
   gameIsRunning = false;
   disableGameButtons();
   roundLength = 2;
-  var audio = new Audio("src/sounds/fail1.mp3");
+  var audio = new Audio("https://dl.dropbox.com/s/o8kfeq9cz0pvi9v/fail1.mp3");
   audio.play();
 };
 
@@ -188,12 +188,12 @@ const init = () => {
 
 const animationLoop = () => {
   clearCanvas(ctx, canvas);
-  clearCanvas(sdCtx, soundDebugCanvas);
+/*   clearCanvas(sdCtx, soundDebugCanvas); */
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].draw();
   }
   startButton.draw();
-  drawAnalyser(soundDebugCanvas, sdCtx);
+/*   drawAnalyser(soundDebugCanvas, sdCtx); */
   drawText(ctx, infoText, [canvas.width * 0.5, canvas.height * 0.1]);
   drawText(ctx, `Points: ${points}`, [canvas.width * 0.4, canvas.height * 0.1]);
   window.requestAnimationFrame(animationLoop);
