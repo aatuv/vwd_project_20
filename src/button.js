@@ -15,7 +15,8 @@ class Button {
     height,
     text,
     color,
-    rotateDegrees
+    rotateDegrees,
+    playicon
   ) {
     this.context = context;
     this.canvas = canvas;
@@ -28,6 +29,7 @@ class Button {
     this.rotateDegrees = rotateDegrees;
     this.colorTint = color; // saving the original color settings to make adjusting the color brightness easier
     this.color = hslColor(color[0], color[1], 50); // [hue, sat]
+    this.playicon=playicon;
   }
 
   get top() {
@@ -85,14 +87,46 @@ class Button {
       this.width,
       this.height
     );
-    this.context.font = "16px Georgia";
+    if (this.playicon){
+      this.context.fillStyle = "rgb(0,100,0)";
+    this.context.beginPath();
+    this.context.moveTo(this.location[0]+140, this.location[1]+10);
+    this.context.lineTo(this.location[0]+140, this.location[1]+60);
+    this.context.lineTo(this.location[0]+180, this.location[1]+35);
+    this.context.lineTo(this.location[0]+140, this.location[1]+10);
+    this.context.fill();
+    this.context.font = "25px Arial Black";
     this.context.fillStyle = "rgb(0,0,0)";
     this.context.fillText(
       this.text,
-      (this.location[0] + this.width* 0.5) - 50,
-      this.location[1] + this.height * 0.55,
+      (this.location[0] + this.width* 0.5)-50,
+      this.location[1] + this.height * 0.6,
       100
     );
+    }else{
+      this.context.fillStyle = "rgb(0,0,100)";
+      this.context.beginPath();
+      this.context.arc(this.location[0]+160, this.location[1]+35, 20, 0, 2 * Math.PI);
+      this.context.fill();
+      this.context.font = "30px Times New Roman";
+      this.context.fillStyle = "rgb(255,255,255)";
+      this.context.fillText("i",
+      (this.location[0] + this.width* 0.5)+31,
+      this.location[1] + this.height * 0.65,
+      100
+      );
+      this.context.stroke();
+      this.context.font = "25px Arial Black";
+    this.context.fillStyle = "rgb(0,0,0)";
+    this.context.fillText(
+      this.text,
+      (this.location[0] + this.width* 0.5)-50,
+      this.location[1] + this.height * 0.6,
+      200
+    );
+    }
+    
+    
   }
 }
 

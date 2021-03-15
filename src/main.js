@@ -177,9 +177,10 @@ const init = () => {
     [canvas.width * 0.6, 0],
     250,
     70,
-    "Play the game!",
+    "Play",
     [70, 90],
-    0
+    0,
+    true
   );
   startButton.onClick(startGame);
   startButton.onHover(() => {
@@ -192,9 +193,10 @@ const init = () => {
     [canvas.width * 0.3, 0],
     250,
     70,
-    "About the game",
+    "Info",
     [30, 80],
-    0
+    0,
+    false
   );
   infoButton.onClick(displayInfo);
   infoButton.onHover(() => {
