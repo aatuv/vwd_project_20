@@ -68,8 +68,8 @@ const nextRound = () => {
 const endRound = () => {
   points += 1;
   rocket.targetY = rocket.y - rocketStep;
+  rocket.playSound();
   if (points < pointsTarget) {
-    rocket.playSound();
     for (let i = 0; i < buttons.length; i++) {
       buttons[i].isDisabled = true;
       buttons[i].dim();
