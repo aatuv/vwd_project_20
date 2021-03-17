@@ -8,19 +8,25 @@
     <script type="module" src="src/main.js" defer></script>
   </head>
   <body>
+    <canvas id="rocketCanvas"></canvas>
     <canvas id="mainCanvas"></canvas>
     <div id="info">
       <h2>About</h2>
       <b>1. How the game works</b>
+      <p>The player's goal is to send the rocket to the moon by passing enough rounds (<b>6</b>) in the game.</p>
       <p>
-        First the player presses the "start game" button. Then a sequence of
-        sounds are generated and played so that every button lights up when its
-        own sound is played. The player then needs to press those same buttons
-        in the correct order to proceed to the next round.
+        A sequence of sounds are generated each round and played so that every button
+        lights up when its own sound is played. The player then needs to press
+        those same buttons in the correct order to proceed to the next round.
       </p>
-      <p>On each round the sequence to remember gets longer and thus harder to remember.</p>
-      <p>The player earns 10 points for each correct answer.</p>
-      <p>The game ends when the player fails to press the buttons in the correct order.</p>
+      <p>
+        On each round the sequence to remember gets longer and thus harder to
+        remember.
+      </p>
+      <p>
+        The game ends when the player fails to press the buttons in the correct
+        order, or when they succeed on boosting the rocket to the moon.
+      </p>
     </div>
     <!--     <canvas id="soundDebug"></canvas> -->
   </body>

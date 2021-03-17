@@ -70,6 +70,17 @@ const gameButtonIsIntersecting = (xyPos, canvasElement, rotateDegrees) => {
   }
 };
 
+const startButtonIsIntersecting = (xyPos, canvasElement) => {
+  const distance = Math.sqrt(xyPos.x * xyPos.x + xyPos.y * xyPos.y);
+  if (
+    distance <= canvasElement.radius &&
+    distance <= canvasElement.radius * 2
+  ) {
+    return true;
+  }
+  return false;
+}
+
 // return a hsl color with specified parameters
 const hslColor = (hue, saturation, lightness) => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
@@ -103,6 +114,7 @@ export {
   clearCanvas,
   isIntersecting,
   gameButtonIsIntersecting,
+  startButtonIsIntersecting,
   hslColor,
   degreesToRadians,
   drawText,

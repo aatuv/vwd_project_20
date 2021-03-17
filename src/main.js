@@ -1,8 +1,27 @@
 import { clearCanvas, drawText, displayInfo } from "./util.js";
-import { Button, GameButton } from "./button.js";
+import { Button, GameButton, StartButton } from "./button.js";
 import { drawAnalyser, NOTES, playNote } from "./audio.js";
+import { Moon, Rocket, Particle } from "./scene.js";
 
 let canvas = document.getElementById("mainCanvas");
+
+// receives one point per round.
+let points = 0;
+// how many passed rounds are needed to win.
+let pointsTarget = 6;
+// rocket to moon stuff
+let rocketCanvas = document.getElementById("rocketCanvas");
+rocketCanvas.height = window.innerHeight;
+rocketCanvas.width = window.innerWidth;
+var rcCtx = rocketCanvas.getContext("2d");
+let rocket;
+let moon;
+const moonPosition = { x: rocketCanvas.width * 0.3, y: 50 };
+const rocketPosition = {
+  x: rocketCanvas.width * 0.3 + 5,
+  y: rocketCanvas.height * 0.75,
+};
+let rocketStep = (rocketPosition.y - moonPosition.y) / pointsTarget;
 /* let soundDebugCanvas = document.getElementById("soundDebug"); */
 //let startButton = document.getElementById("startButton");
 /* soundDebugCanvas.height = 500;
@@ -11,17 +30,17 @@ canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
 var ctx = canvas.getContext("2d");
 /* var sdCtx = soundDebugCanvas.getContext("2d"); */
-let infoText = "Start the game!";
+let infoText = "";
 let buttons = [];
 let startButton;
 let infoButton;
 let roundLength = 3; // how long sequence is on this round
-let points = 0;
 let gameIsRunning = false;
 let round = []; // correct notes for this round
 let playedNotes = []; // the notes that the player has played this round
 const GAME_NOTES = [NOTES.C, NOTES.D, NOTES.G, NOTES.E]; // notes mapped to gameButtons
-
+let victoryAnimation = false;
+let particleArray = [];
 
 // generate a new round randomly and return it
 const generateNewRound = () => {
@@ -39,24 +58,51 @@ const nextRound = () => {
     round = [];
     roundLength++;
     round = generateNewRound();
+
     setTimeout(playRound(), 1000);
   }
 };
 
 // end current round and start a move to the next one
+// if player reached moon, end game
 const endRound = () => {
-  for (let i = 0; i < buttons.length; i++) {
-    buttons[i].isDisabled = true;
-    buttons[i].dim();
-    buttons[i].onClick(() => {});
+  points += 1;
+  rocket.targetY = rocket.y - rocketStep;
+  if (points < pointsTarget) {
+    rocket.playSound();
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].isDisabled = true;
+      buttons[i].dim();
+      buttons[i].onClick(() => {});
+    }
+    infoText = "Get ready...";
+    var audio = new Audio(
+      "https://dl.dropbox.com/s/zp3hwkf1vrimq6e/magic1.mp3"
+    );
+    audio.play();
+    setTimeout(() => {
+      infoText = "";
+      nextRound();
+    }, 2000);
+  } else {
+    console.log("asd")
+    moon.playSound();
+    round = [];
+    playedNotes = [];
+    points = 0;
+    gameIsRunning = false;
+    victoryAnimation = true;
+    disableGameButtons();
+    roundLength = 3;
+    setTimeout(() => {
+      startButton.lightUp();
+      startButton.isDisabled = false;
+      victoryAnimation = false;
+      rocket.y = rocketPosition.y;
+      rocket.targetY = rocketPosition.y;
+      initParticles()
+    }, 5000);
   }
-  infoText = "get ready for next round!";
-  var audio = new Audio("https://dl.dropbox.com/s/zp3hwkf1vrimq6e/magic1.mp3");
-  audio.play();
-  setTimeout(() => {
-    infoText = "Round starting...";
-    nextRound();
-  }, 3000);
 };
 
 const disableGameButtons = () => {
@@ -70,12 +116,16 @@ const disableGameButtons = () => {
 // the game has ended, set initialize game variables
 // TODO: show final score
 const gameEnded = () => {
-  infoText = `The game has ended! Your score was ${points} points.`;
+  infoText = "";
   round = [];
   playedNotes = [];
   points = 0;
   gameIsRunning = false;
+  startButton.lightUp();
+  startButton.isDisabled = false;
   disableGameButtons();
+  rocket.y = rocketPosition.y;
+  rocket.targetY = rocketPosition.y;
   roundLength = 3;
   var audio = new Audio("https://dl.dropbox.com/s/o8kfeq9cz0pvi9v/fail1.mp3");
   audio.play();
@@ -90,8 +140,7 @@ const addToPlayedNotesArray = (note) => {
   if (playedNotes[playedNotes.length - 1] !== round[playedNotes.length - 1]) {
     gameEnded();
   } else {
-    infoText = "Correct!";
-    points += 10;
+    infoText = "";
     setTimeout(() => {
       infoText = "";
     }, 500);
@@ -104,7 +153,7 @@ const playRound = () => {
 
   // first show the order of buttons to press
   const awaitRound = () => {
-    infoText = "playing round...";
+    infoText = "";
     let playRoundNotes;
     return new Promise((resolve, reject) => {
       playRoundNotes = setInterval(() => {
@@ -125,7 +174,7 @@ const playRound = () => {
     for (let i = 0; i < buttons.length; i++) {
       buttons[i].isDisabled = false;
     }
-    infoText = "Your turn!";
+    infoText = "";
   };
 
   awaitRound().then(() => {
@@ -135,6 +184,8 @@ const playRound = () => {
 
 const startGame = () => {
   gameIsRunning = true;
+  startButton.dim();
+  startButton.isDisabled = true;
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].isPlayingSound = true;
   }
@@ -142,6 +193,23 @@ const startGame = () => {
   playRound();
 };
 
+const initParticles = () => {
+  particleArray = []
+  for (let i = 0; i < 500; i++) {
+    particleArray.push(
+      new Particle(
+        rcCtx,
+        rocketCanvas,
+        Math.round(Math.random() * rocketCanvas.width),
+        Math.round(
+          Math.random() * (moonPosition.y + 20 - moonPosition.y - 20) +
+            moonPosition.y -
+            20
+        )
+      )
+    );
+  }
+};
 // initialize canvas
 const init = () => {
   // initialize game buttons
@@ -171,14 +239,14 @@ const init = () => {
     hue += 25;
   }
   // initialize start button
-  startButton = new Button(
+  startButton = new StartButton(
     canvas,
     ctx,
-    [canvas.width * 0.6, 0],
-    250,
-    70,
-    "Play",
-    [70, 90],
+    [canvas.width * 0.5, canvas.height * 0.5],
+    300,
+    300,
+    null,
+    [152, 76],
     0,
     true
   );
@@ -190,10 +258,10 @@ const init = () => {
   infoButton = new Button(
     canvas,
     ctx,
-    [canvas.width * 0.3, 0],
-    250,
+    [canvas.width * 0.5 - 75, 50],
+    150,
     70,
-    "Info",
+    "",
     [30, 80],
     0,
     false
@@ -202,20 +270,56 @@ const init = () => {
   infoButton.onHover(() => {
     //console.log("hover start")
   });
+
+  initParticles();
+
+  moon = new Moon(
+    rcCtx,
+    rocketCanvas,
+    moonPosition.x,
+    moonPosition.y,
+    "https://dl.dropbox.com/s/8rojntm6uvibmb6/moon.png"
+  );
+  rocket = new Rocket(
+    rcCtx,
+    rocketCanvas,
+    rocketPosition.x,
+    rocketPosition.y,
+    5 / pointsTarget,
+    "https://dl.dropbox.com/s/3mi3n6u6fkysr1y/rocket.png"
+  );
+  moon.init();
+  rocket.init();
+};
+
+const updateParticles = () => {
+  for (let i = 0; i < particleArray.length; i++) {
+    particleArray[i].update();
+  }
+};
+
+const drawParticles = () => {
+  for (let i = 0; i < particleArray.length; i++) {
+    particleArray[i].draw();
+  }
 };
 
 const animationLoop = () => {
   clearCanvas(ctx, canvas);
-/*   clearCanvas(sdCtx, soundDebugCanvas); */
+  clearCanvas(rcCtx, rocketCanvas);
+  rocket.update();
+  if (victoryAnimation) updateParticles();
+  /*   clearCanvas(sdCtx, soundDebugCanvas); */
+  moon.draw();
+  rocket.draw();
+  if (victoryAnimation) drawParticles();
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].draw();
   }
   startButton.draw();
   infoButton.draw();
-/*   drawAnalyser(soundDebugCanvas, sdCtx); */
+  /*   drawAnalyser(soundDebugCanvas, sdCtx); */
   drawText(ctx, infoText, [canvas.width * 0.45, canvas.height * 0.12]);
-  drawText(ctx, `Points: ${points}`, [canvas.width * 0.45, canvas.height * 0.165]);
-  drawText(ctx, "Team 20", [canvas.width * 0.5 - 75, canvas.height * 0.50], 40, 150)
   window.requestAnimationFrame(animationLoop);
 };
 
@@ -225,4 +329,6 @@ animationLoop();
 window.addEventListener("resize", () => {
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
+  rocketCanvas.height = window.innerHeight;
+  rocketCanvas.width = window.innerWidth;
 });

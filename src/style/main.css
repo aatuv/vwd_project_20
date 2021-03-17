@@ -11,6 +11,7 @@ html, body {
 
 body {
     overflow: hidden;
+    background: #000000;
 }
 
 #mainCanvas {
@@ -18,7 +19,13 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(22, 14, 12, 0.726);
+}
+
+#rocketCanvas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #soundDebug {
