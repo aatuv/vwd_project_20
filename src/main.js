@@ -16,9 +16,9 @@ rocketCanvas.width = window.innerWidth;
 var rcCtx = rocketCanvas.getContext("2d");
 let rocket;
 let moon;
-const moonPosition = { x: rocketCanvas.width * 0.3, y: 50 };
+const moonPosition = { x: rocketCanvas.width * 0.2, y: 50 };
 const rocketPosition = {
-  x: rocketCanvas.width * 0.3 + 5,
+  x: rocketCanvas.width * 0.2 + 5,
   y: rocketCanvas.height * 0.75,
 };
 let rocketStep = (rocketPosition.y - moonPosition.y) / pointsTarget;
