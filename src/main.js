@@ -9,7 +9,6 @@ let canvas = document.getElementById("mainCanvas");
 let points = 0;
 // how many passed rounds are needed to win.
 let pointsTarget = 6;
-// rocket to moon stuff
 let rocketCanvas = document.getElementById("rocketCanvas");
 rocketCanvas.height = window.innerHeight;
 rocketCanvas.width = window.innerWidth;
@@ -290,7 +289,7 @@ const init = () => {
     rocketCanvas,
     moonPosition.x,
     moonPosition.y,
-    "https://dl.dropbox.com/s/8rojntm6uvibmb6/moon.png"
+    "https://dl.dropbox.com/s/8rojntm6uvibmb6/moon.png" // original image by Aatu
   );
   rocket = new Rocket(
     rcCtx,
@@ -298,7 +297,7 @@ const init = () => {
     rocketPosition.x,
     rocketPosition.y,
     5 / pointsTarget,
-    "https://dl.dropbox.com/s/3mi3n6u6fkysr1y/rocket.png"
+    "https://dl.dropbox.com/s/3mi3n6u6fkysr1y/rocket.png" // original image by Aatu
   );
   moon.init();
   rocket.init();

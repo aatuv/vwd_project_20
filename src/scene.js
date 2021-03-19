@@ -7,7 +7,7 @@ class Moon {
     this.src = src;
     this.image = new Image();
     this.sound = new Audio(
-      "https://dl.dropbox.com/s/ogob793xcqjrxq4/laser.wav"
+      "https://dl.dropbox.com/s/ogob793xcqjrxq4/laser.wav" // generated with https://sfxr.me/
     );
   }
 
@@ -34,7 +34,7 @@ class Rocket {
     this.src = src;
     this.image = new Image();
     this.sound = new Audio(
-      "https://dl.dropbox.com/s/gegucqqi8kwrxvt/rocket.wav"
+      "https://dl.dropbox.com/s/gegucqqi8kwrxvt/rocket.wav" // generated with https://sfxr.me/
     );
   }
 
