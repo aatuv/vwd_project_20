@@ -77,7 +77,7 @@ const endRound = () => {
     }
     infoText = "Get ready...";
     var audio = new Audio(
-      "https://dl.dropbox.com/s/zp3hwkf1vrimq6e/magic1.mp3"
+      "https://dl.dropbox.com/s/zp3hwkf1vrimq6e/magic1.mp3" //sound from https://www.soundjay.com/misc-sounds.html
     );
     audio.play();
     setTimeout(() => {
@@ -127,7 +127,7 @@ const gameEnded = () => {
   rocket.y = rocketPosition.y;
   rocket.targetY = rocketPosition.y;
   roundLength = 3;
-  var audio = new Audio("https://dl.dropbox.com/s/o8kfeq9cz0pvi9v/fail1.mp3");
+  var audio = new Audio("https://dl.dropbox.com/s/o8kfeq9cz0pvi9v/fail1.mp3"); //sound from https://www.soundjay.com/misc-sounds.html
   audio.play();
 };
 
