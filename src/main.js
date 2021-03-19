@@ -270,7 +270,7 @@ const init = () => {
   infoButton = new Button(
     canvas,
     ctx,
-    [canvas.width * 0.5 - 75, 50],
+    [canvas.width * 0.9 - 75, 50],
     150,
     70,
     "",
