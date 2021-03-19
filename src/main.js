@@ -1,7 +1,7 @@
 import { clearCanvas, drawText, displayInfo } from "./util.js";
 import { Button, GameButton, StartButton } from "./button.js";
 import { drawAnalyser, NOTES, playNote } from "./audio.js";
-import { Moon, Rocket, Particle } from "./scene.js";
+import { Moon, Rocket, Particle, BackroundNote } from "./scene.js";
 
 let canvas = document.getElementById("mainCanvas");
 
@@ -193,6 +193,18 @@ const startGame = () => {
   playRound();
 };
 
+let brnotes=[];
+function addnotes(){
+  const angleIncrement=Math.PI*2/10;
+  for(var i=0;i<10;i++){
+    var red=Math.random()*255;
+    var green=Math.random()*255;
+    var blue=Math.random()*255;
+    brnotes.push(new BackroundNote(rcCtx, rocketCanvas, canvas.width * 0.5, canvas.height * 0.5, 20, "rgba("+red+","+green+","+blue+","+1+")", {x:Math.cos(Math.random()*angleIncrement*i), y:Math.sin(Math.random()*angleIncrement*i)}))
+  }
+}
+addnotes();
+
 const initParticles = () => {
   particleArray = []
   for (let i = 0; i < 500; i++) {
@@ -303,19 +315,35 @@ const drawParticles = () => {
     particleArray[i].draw();
   }
 };
+const drawBackround = () => {
+  for (let i = 0; i < brnotes.length; i++) {
+    brnotes[i].draw();
+  }
+}
+const updateBackround = () => {
+  for (let i = 0; i < brnotes.length; i++) {
+    brnotes[i].update();
+  }
+}
 
 const animationLoop = () => {
   clearCanvas(ctx, canvas);
   clearCanvas(rcCtx, rocketCanvas);
   rocket.update();
+  updateBackround();  
   if (victoryAnimation) updateParticles();
   /*   clearCanvas(sdCtx, soundDebugCanvas); */
   moon.draw();
   rocket.draw();
+  drawBackround();
   if (victoryAnimation) drawParticles();
   for (let i = 0; i < buttons.length; i++) {
     buttons[i].draw();
   }
+  
+  
+  
+  
   startButton.draw();
   infoButton.draw();
   /*   drawAnalyser(soundDebugCanvas, sdCtx); */
